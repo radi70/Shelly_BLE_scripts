@@ -77,14 +77,30 @@ function handleScanResult(event, result) {
             let data = parseSwitchBotData(mfgData, isHub);
             
 			let bthome = [];
-			bthome[0] = 0x40;		
+			bthome[0] = 0x40;
+			// temperature
 			bthome[1] = 0x02;
 			bthome[2] = (data.temperature * 100) & 0xFF;
 			bthome[3] = (data.temperature * 100) >> 8;
+			// humidity
 			bthome[4] = 0x03;
 			bthome[5] = (data.humidity * 100) & 0xFF;
 			bthome[6] = (data.humidity * 100) >> 8;
-           
+			// timestamp (Date.now() is in ms => s
+			let ts = Date.now() / 1000;
+			bthome[7] = 0x50;
+			bthome[8] = ts & 0xFF;
+			bthome[9] = (ts >> 8)& 0xFF;
+			bthome[10] = (ts >> 16) & 0xFF;
+			bthome[11] = (ts >> 24) & 0xFF;
+			// name
+			bthome[12] = 0x53;
+			bthome[13] = device.name.length;
+			for (let n = 0; n < device.name.length; n++) {
+				bthome[14 + n] = device.name.charCodeAt(n);
+			}
+			
+			
             if (data) {
                     deviceReadings[addr] = {
                     name: device.name,
@@ -169,4 +185,3 @@ Shelly.call('Mqtt.GetConfig', '', function (res, err_code, err_msg, ud) {
     init();
 
 });
-
