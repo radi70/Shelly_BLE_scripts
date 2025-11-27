@@ -2,6 +2,12 @@ const DEVICES = {
     "EE2E04861232": {
         name: "temp1"
     },
+    "B0E9FEFAA657": {
+        name: "temp2"
+    },
+    "EEB300866549": {
+        name: "temp3"
+    },
 };
 
 let SHELLY_ID = undefined;
@@ -155,4 +161,5 @@ Shelly.call('Mqtt.GetConfig', '', function (res, err_code, err_msg, ud) {
     SHELLY_ID = res['topic_prefix'];
 
     init();
+
 });
